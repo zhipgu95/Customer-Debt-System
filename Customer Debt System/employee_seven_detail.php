@@ -1,4 +1,5 @@
 <?php
+
 	include("connectdatabase.php");
 	include("function.php");
 	
@@ -12,59 +13,25 @@
 	}
 	
 	$error = "";
-	
-	if(isset($_POST['submit']))
-	{
-		$firstName = $_POST['firstname'];
-		$lastName = $_POST['lastname'];
-		$gender = $_POST['gender'];
-		if(!logged_in())
-		{
-			$error = "请先登陆账号!";
-		}
-		else if(strlen($firstName)==0)
-		{
-			$error = "名字不能为空!";
-		}
-		else if(strlen($lastName)==0)
-		{
-			$error = "姓氏不能为空!";
-		}
-		else if(!customer_exists($firstName, $lastName, $conn)){
-			$error = "该客户不存在, 无需取消!";
-		}
-		//move_uploaded_file($tmp_image, "images/$image")
-		//move_uploaded_file($_FILES['image']['tmp_name'] , "images/$image" . $FILES['image']['name']))
-		else
-		{
-			$deleteCustomer = "DELETE customer, customer_record FROM customer INNER JOIN customer_record WHERE customer.FirstName='$firstName'
-			and customer.LastName='$lastName' and customer.FirstName=customer_record.FirstName and customer.LastName=customer_record.LastName";
-			if(mysqli_query($conn, $deleteCustomer)){
-				$error = "您已成功删除!";
-			}
-		}
-	}
-	
-?>
+		
 
+?>
 
 
 <!DOCTYPE html>
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>删除客户</title>
+<title>2018年7月份员工借款明细</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/delete.css" rel="stylesheet" />
-
+<link href="css/employee_month.css" rel="stylesheet"/>
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
@@ -150,28 +117,111 @@
 
 <div id="error"><?php echo $error; ?></div>
 
-<div class="table">
-
-	<div class = "table2">
-    	<form method = "Post" action = "Delete_Customer.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
-        <input type = "text" name = "firstname"/><br/>
-        
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
-        
-        <label class = "up">性别</label><br/>
-        <select name = "gender">
-		  <option value="male">男性</option>
-		  <option value="female">女性</option>
-		</select><br/>
-        
-		<br/>
-        <input type = "submit" name = "submit" value = "点击删除该客户"/>
+<div class = "include">
+	<div class = "info"><p>查询结果</p></div>
+	
+	<div class = "table_info">
+		<div id="menu">
+		<div class="dropdown_new">
+				<button class="dropbtn_new">员工借款索引
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content_new">
+					<a href="employee_one.php">1月份</a>
+					<a href="employee_two.php">2月份</a>
+					<a href="employee_three.php">3月份</a>
+					<a href="employee_four.php">4月份</a>
+					<a href="employee_five.php">5月份</a>
+					<a href="employee_six.php">6月份</a>
+					<a href="employee_seven.php">7月份</a>
+					<a href="employee_eight.php">8月份</a>
+					<a href="employee_nine.php">9月份</a>
+					<a href="employee_ten.php">10月份</a>
+					<a href="employee_eleven.php">11月份</a>
+					<a href="employee_twelve.php">12月份</a>
+					<a href="employee_2018.php">2018年</a>
+					<a href="employee_2019.php">2019年</a>
+				</div>
+		</div>
+		<a href="index.php">返回主页</a>
+		</div>
+    	
+		<?php
+			include("connectdatabase.php");
+			
+		//	$perpage = 3;
+		//	if(isset($_GET["page"])){
+		//		$page = intval($_GET["page"]);
+		//	}
+		//	else {
+		//		$page = 1;
+		//	}
+			
+		//	$total = $perpage * $page;
+		//	$start = $total - $perpage;
+			if(isset($_GET['search'])){
+				$name = $_GET['search'];
+				$sql = "select distinct concat(LastName, ' ', FirstName) as name, Date, Amount, Detail  
+						from employee_record 
+						where MONTH(Date)=7 and YEAR(Date)=2018 and concat(LastName, ' ', FirstName)='$name'";
+				$result = mysqli_query($conn, $sql);
+				$num_rows = mysqli_num_rows($result);
+			}
+			
+			if(!logged_in()){
+				$error = "请先登陆账号!";
+				echo "<div id='error_new'>"; 
+					echo $error;
+				echo "</div>";
+			}
+			else if ($num_rows > 0){
+				//output data of each row
+				echo "<div id='table_arrange'>";
+				echo "<table><tr><th>姓名</th><th>日期</th><th>金额数</th><th>具体信息</th></tr>";
+				//output data of each row
+				$total_amount_one = 0;
+				while($row = mysqli_fetch_array($result)){
+					echo "<tr><td>".$row["name"]."</td><td>".$row["Date"]."</td><td>".$row["Amount"]."</td><td>".$row["Detail"]."</td></tr>";	
+					$total_amount_one += $row["Amount"];
+				}
+			//	$total_debt+=$totaldebt_perpage;
+				echo "</table>";
+				echo "</div>";
+				echo "<div id='debt_form'>";
+					echo "<p>2018年7月份(员工:".$name.")借款金额数: ".$total_amount_one."</p>";
+				echo "</div>";
+				
+			}
+			else {
+				echo "0个查询结果";
+			}
+		
+		/*	$result1 = mysqli_query($conn, "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='Zhipeng' and cr.LastName='Gu'");
+			$total_record = mysqli_num_rows($result1);
+			$pages = $total_record/$perpage;
+			$pages = ceil($pages);
+			echo "<br/>";
+			//echo "<br/>";
+			for($b=1; $b<=$pages; $b++)
+			{
+				?><a href="search_result.php?page=<?php echo $b; ?>" style="text-decoration:none"><?php echo "<div id='totalpage'>"; echo "<div id='pages'>"; echo $b." "; echo "</div>"; echo "</div>"; ?></a><?php
+			} */
+				
+			mysqli_close($conn);
+		?>
+		
+		<div class = "table3">
+    	<form method = "Post" action = "insert_employee_debt.php" enctype="multipart/form-data">
+        <input type = "submit" name = "submit_first" value = "添加新借款记录"/>
 		</form>
+		</div>
+		
+		
     </div>
- </div>
- 
+	
+</div>
+
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -203,5 +253,7 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+
+</body>
+</html>

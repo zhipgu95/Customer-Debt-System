@@ -1,7 +1,7 @@
 <?php
-
 	include("connectdatabase.php");
 	include("function.php");
+	
 	
 	if(logged_in())
 	{
@@ -12,73 +12,21 @@
 		echo "You are not logged in!";
 	}
 	
-	$error = "";
-	
-	if(isset($_POST['submit']))
-	{
-		$name=$_POST['name'];
-		$email=$_POST['email'];
-		$phone=$_POST['phone'];
-		$msg=$_POST['msg'];
-
-		$to='zhipgu@iu.edu'; // Receiver Email ID, Replace with your email ID
-		$subject='Form Submission';
-		$message="Name :".$name."\n"."Phone :".$phone."\n"."Wrote the following :"."\n\n".$msg;
-		$headers="From: ".$email;
-		if(!logged_in())
-		{
-			$error = "请先登陆账号!";
-		}
-		else if(empty($name))
-		{
-			$error = "请输入姓名!";
-		}
-		else if(!filter_var($email, FILTER_VALIDATE_EMAIL))
-		{
-			$error = "请输入正确的邮箱格式!";
-		}
-		else if(empty($phone))
-		{
-			$error = "请输入你的手机号!";
-		}
-		else if(empty($msg))
-		{
-			$error = "请输入你的信息!";
-		}
-		else if(mail($to, $subject, $message, $headers))
-		{
-			$insertquery = "INSERT INTO contact_us 
-						(ContactName, ContactEmail, ContactPhone, ContactMsg)
-						VALUES('$name','$email','$phone','$msg')";
-			if(mysqli_query($conn, $insertquery))
-			{
-				$error = "发送成功，谢谢!"." ".$name.", 我们会尽快联系你!";
-			}
-		}
-		else
-		{
-			$error = "发送错误，请再次尝试!";
-		}
-	}	
-		
-
-	
 ?>
 
 
 <!DOCTYPE html>
-
 <html class="no-js">
 <head>
-	<meta charset="UTF-8" />
-	<title>联系我们</title>
-	<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-	<meta name="viewport" content="width=device-width, initial-scale=1" />
-	<meta name="keywords" content="" />
-	<meta name="description" content="" />
-	<link href="css/reset.css" rel="stylesheet" />
-	<link href="css/main.css" rel="stylesheet" />
-	<link href="css/contact_us.css" rel="stylesheet" />
+<meta charset="UTF-8" />
+<title>查询员工</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="keywords" content="" />
+<meta name="description" content="" />
+<link href="css/reset.css" rel="stylesheet" />
+<link href="css/main.css" rel="stylesheet" />
+<link href="css/search_result.css" rel="stylesheet" />
 
 </head>
 <body style= "background:">
@@ -89,7 +37,7 @@
 
 <div class="i_header header">
 	<div class="wrap">
-		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_logo.png" width="110" height="70"/></a></div>
+		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_Logo.png" width="110" height="70"/></a></div>
 		<div class="nav">
 			<ul>
 				<li>
@@ -103,7 +51,6 @@
 					<a href="employee_list.php">员工列表</a>
 				</div>
 				</div>
-				</li>
 				<li>
 				<div class="dropdown">
 				<button class="dropbtn">各店销售
@@ -143,8 +90,8 @@
 				</div>
 				</div>
 				</li>
-				<li><a href="Insert_Customer.php" title="添加">添加新客户</a></li>
-				<li><a href="Delete_Customer.php" title="删除">删除客户</a></li>
+				<li><a href="Insert_Customer.php" title="insert">添加新客户</a></li>
+				<li><a href="Delete_Customer.php" title="delete">删除客户</a></li>
 				<li>
 				<?php
 				if (isset($_SESSION['username'])){
@@ -158,7 +105,7 @@
 				}
 				?>
 				</li>
-				
+			
 				<div class="clear"></div>
 			</ul>
 		</div>
@@ -166,30 +113,19 @@
 	</div>
 </div>
 
-<div id="error"><?php echo $error; ?></div>
-
 <div class="table">
 
 	<div class = "table2">
-    	<form method = "Post" action = "contact_us.php"><br/>
-		<label class="up">姓名</label><br/>
-		<input type = "text" name = "name"/>
-		<br/>
+    	<form method = "Get" action = "employee_result.php" enctype="multipart/form-data"><br/>
+        <label class = "up" >名字</label><br/>
+        <input type = "text" name = "firstname"/><br/>
 		
-		<label class = "up">邮箱</label><br/>
-		<input type = "text" name = "email"/> 
-		<br/>
-		
-		<label class = "up">手机号</label><br/>
-		<input type = "text" name = "phone"/>
-		<br/>
+        <br/>
+        <label class = "up">姓氏</label><br/>
+        <input type = "text" name = "lastname"/><br/>
         
-        <label class = "up">添加你的信息</label><br/>
-		<textarea name = "msg" rows="5" cols="50" placeholder="在这里输入..."></textarea>
-		<br/>
-		<br/>
-		
-        <input type = "submit" name = "submit" value="提交上传"/>
+		<br/><br/>
+        <input type = "submit" name = "submit" value = "点击查询该员工借款"/>
 		</form>
     </div>
  </div>
@@ -225,7 +161,5 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- 
- 
  </body>
  </html>
