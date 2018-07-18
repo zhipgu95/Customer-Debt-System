@@ -1,3 +1,5 @@
+
+
 body{
 	background-image: url(../images/background.jpg);
 	background-repeat: no-repeat;
@@ -9,22 +11,96 @@ label.up{
 	font-weight:bold;
 }
 
+
+up{
+	color:blue;
+	font-weight:bold;
+	font-size:20px;
+}
+
 #error
 {
 	width:1000px;
 	margin-left:50px;
-	font-size:20px;
-	color:red;
+	font-size:25px;
+	color: red;
 }
 
-#error_new
-{
-	width:1000px;
-	margin-left:20px;
-	font-size:20px;
-	color:red;
+.table{
+	width:800px;
+	height:600px;
+	background-image:url(../images/Pet.jpg);
+	background-repeat:no-repeat;    
+	margin:100px auto;
+	min-height:560px;
+	margin-top:100px;
+	border:1px solid #000000;
+	border-bottom:3px solid #000000;
+	border-radius:5px;
+	
+	   }
+	
+.wordv1{
+	color: blue;
+	font-size: 60px;
+	
+}
+	
+
+.table7{
+	
+position: relative;
+      left: 100px;
+      top: 20px;
+	  
+	   
+	   }
+	   
+
+	   
+.table3{
+	
+position: relative;
+      left: 300px;
+      top: 150px;
+	   
+	   
+	   }
+	   
+	   
+	   
+	   
+.create{
+	position: relative;
+      left: 250px;
+      top: 80px;
 }
 
+.1{
+	position: relative;
+      left: 20px;
+      top: 80px;
+}
+
+
+.word1{
+	font-size:40px;
+	font-weight:bold;
+	font-style:inherit;
+	font-family:euphoria-script;
+	color:#000000;
+	
+}
+
+
+
+.provider{
+	position: relative;
+    left: 280px;
+	top: 65px;
+	color:blue; 
+	font-size:15px;
+}
 
 #menu
 {
@@ -45,7 +121,6 @@ label.up{
 	margin-right:0px;
 	font-size:20px;
 }
-
 
 .dropdown-content_new {
     display: none;
@@ -78,6 +153,7 @@ label.up{
 .dropdown_new {
     float: left;
     overflow: hidden;
+	margin-right:50px;
 }
 
 .dropdown_new .dropbtn_new {
@@ -91,15 +167,14 @@ label.up{
     margin: 0;
 }
 
-
 .include{
 	background-image: url(../images/Pet.jpg);
 	background-repeat: no-repeat;
 	background-size: cover;
-	height:1700px;
+	height:1000px;
 	margin:0px auto;
 	width:80%;
-	margin-top:4%;
+	margin-top:5%;
 	margin-bottom:5%;
 	border:1px solid #000000;
 	border-bottom:3px solid #000000;
@@ -112,41 +187,11 @@ label.up{
 	margin-top:2%;
 	padding-left:60px;
 	width:70%;    
-	height:90%;
+	height:70%;
 	border:1px solid #000000;
 	border-bottom:3px solid #000000;
 	border-radius:5px;
 	background-color:white;
-}
-
-.table2{
-	position:relative;
-    left:40%;
-    top:120px;
-}
-
-.table3{
-    position:absolute;
-	margin-left:22%;
-    top:165%;
-}
-
-.table4{
-	position:absolute;
-	margin-left:22%;
-    top:175%;
-}
-
-#pages{
-	margin-left:5%;
-	font-size:20px;
-	float:left;
-}
-
-#totalpage{
-	margin:20px auto;
-	margin-left:40%;
-	width:40%;
 }
 
 .info p{
@@ -160,68 +205,3 @@ label.up{
 	background-color:red;
 	padding:10px;
 }
-
-#my_map{
-	margin-left:15%;
-	border:1px solid #000000;
-	border-bottom:3px solid #000000;
-	border-radius:5px;
-	background:#f2f2f2;
-	float:left;
-}
-
-
-#img_div{
-	width:400px;
-	height:300px;
-	margin-top:5%;
-	margin-left:20%;
-	background-color:white;
-}
-
-#text_div{
-	width:400px;
-	height:180px;
-	margin-top:0%;
-	margin-left:20%;
-	background-color:white;
-}
-
-#text_div p{
-	font-size:20px;
-}
-
-#table_arrange{
-	margin:0px auto;
-	margin-top:1%;
-	width:100%;
-}
-
-#table_arrange table,tr,th,td{
-	border:1px solid black;
-	font-size:16px;
-	text-align:center;
-	border-collapse: collapse;
-}
-
-#table_arrange th{
-	padding-left:50px;
-}
-
-#table_arrange tr td{
-	padding-left:50px;
-}
-
-#debt_form{
-	margin:0px auto;
-	margin-top:1%;
-	font-size:15px;
-	width:100%;
-}
-
-	   
-
-
-
-
-	  

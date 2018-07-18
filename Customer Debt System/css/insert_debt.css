@@ -19,7 +19,7 @@ up{
 #error
 {
 	width:1000px;
-	margin-left:100px;
+	margin-left:50px;
 	font-size:25px;
 	color: red;
 }
@@ -95,6 +95,6 @@ position: relative;
 .provider{
 	position: relative;
     left: 250px;
-	top: 70px;
+	top: 65px;
 	color:blue; 
 }

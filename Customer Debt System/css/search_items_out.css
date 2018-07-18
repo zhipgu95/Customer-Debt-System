@@ -25,7 +25,6 @@ label.up{
 	color:red;
 }
 
-
 #menu
 {
 	width:100%;
@@ -45,7 +44,6 @@ label.up{
 	margin-right:0px;
 	font-size:20px;
 }
-
 
 .dropdown-content_new {
     display: none;
@@ -78,6 +76,7 @@ label.up{
 .dropdown_new {
     float: left;
     overflow: hidden;
+	margin-right:50px;
 }
 
 .dropdown_new .dropbtn_new {
@@ -91,12 +90,11 @@ label.up{
     margin: 0;
 }
 
-
 .include{
 	background-image: url(../images/Pet.jpg);
 	background-repeat: no-repeat;
 	background-size: cover;
-	height:1700px;
+	height:930px;
 	margin:0px auto;
 	width:80%;
 	margin-top:4%;
@@ -109,10 +107,10 @@ label.up{
 
 .table_info{
 	margin:0px auto;
-	margin-top:2%;
+	margin-top:3%;
 	padding-left:60px;
-	width:70%;    
-	height:90%;
+	width:65%;    
+	height:80%;
 	border:1px solid #000000;
 	border-bottom:3px solid #000000;
 	border-radius:5px;
@@ -127,15 +125,10 @@ label.up{
 
 .table3{
     position:absolute;
-	margin-left:22%;
-    top:165%;
+	margin-left:20%;
+    top:90%;
 }
 
-.table4{
-	position:absolute;
-	margin-left:22%;
-    top:175%;
-}
 
 #pages{
 	margin-left:5%;
@@ -218,10 +211,3 @@ label.up{
 	font-size:15px;
 	width:100%;
 }
-
-	   
-
-
-
-
-	  

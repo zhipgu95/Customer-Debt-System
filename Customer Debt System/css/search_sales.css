@@ -95,6 +95,74 @@ position: relative;
 .provider{
 	position: relative;
     left: 250px;
-	top: 65px;
+	top: 40px;
 	color:blue; 
+	font-size:15px;
 }
+
+#menu
+{
+	width:1000x;
+	height:30px;
+	margin:0px auto;
+	text-align:center;
+	border-bottom:1px solid #CCC;
+	box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+	background-color: #f9f9f9;
+}
+
+#menu a
+{
+	text-decoration:none;
+	display:incline-block;
+	
+	margin-right:0px;
+	font-size:20px;
+}
+
+
+.dropdown-content_new {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 120px;
+    box-shadow: 0px 5px 10px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content_new a {
+    float: none;
+    color: red;
+    padding: 5px 5px;
+    text-decoration: none;
+    display: block;
+    text-align: center;
+	font-weight:none;
+	font-size: 5px;
+}
+
+.dropdown-content_new a:hover {
+    background-color: grey;
+}
+
+.dropdown_new:hover .dropdown-content_new {
+    display: block;
+}
+
+.dropdown_new {
+    float: left;
+    overflow: hidden;
+}
+
+.dropdown_new .dropbtn_new {
+    font-size: 20px;    
+    border: none;
+    outline: none;
+    color: black;
+    padding: 0px 20px;;
+    background-color: inherit;
+    font-family: inherit;
+    margin: 0;
+}
+
