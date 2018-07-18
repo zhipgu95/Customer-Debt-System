@@ -1,7 +1,7 @@
 <?php
+
 	include("connectdatabase.php");
 	include("function.php");
-	
 	
 	if(logged_in())
 	{
@@ -12,6 +12,8 @@
 		echo "You are not logged in!";
 	}
 	
+	$error = "";
+	
 ?>
 
 
@@ -19,18 +21,16 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>查询客户</title>
+<title>客户列表(按字母排序)</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/search_result.css" rel="stylesheet" />
-
+<link href="css/search_result.css" rel="stylesheet"/>
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
@@ -106,7 +106,7 @@
 				}
 				?>
 				</li>
-			
+				
 				<div class="clear"></div>
 			</ul>
 		</div>
@@ -114,23 +114,92 @@
 	</div>
 </div>
 
-<div class="table">
+<div id="error"><?php echo $error; ?></div>
 
-	<div class = "table2">
-    	<form method = "Get" action = "search_result.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
-        <input type = "text" name = "firstname"/><br/>
+<div class = "include">
+	<div class = "info"><p>客户列表</p></div>
+	
+	<div class = "table_info">
+		<div id="menu">
+		<div class="dropdown_new">
+				<button class="dropbtn_new">搜索方式
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content_new">
+					<a href="Search_Customer_Total.php">按金额排序</a>
+					<a href="Search_Customer_Total_Letter.php">按字母排序</a>
+					<a href="Search_Customer_Date.php">按时间排序</a>
+				</div>
+		</div>
+		<a href="index.php">返回主页</a>
+		</div>					
+		<?php
+			include("connectdatabase.php");
+			
+		//	$perpage = 3;
+		//	if(isset($_GET["page"])){
+		//		$page = intval($_GET["page"]);
+		//	}
+		//	else {
+		//		$page = 1;
+		//	}
+			
+		//	$total = $perpage * $page;
+		//	$start = $total - $perpage;
+			$sql = "SELECT distinct concat(c.LastName, ' ', c.FirstName) AS name, c.Gender AS gender, c.City AS city, SUM(cr.Amount) AS amount
+					FROM customer_record AS cr, customer AS c WHERE cr.LastName=c.LastName AND cr.FirstName=c.FirstName GROUP BY name ORDER BY name ASC";
+			$result = mysqli_query($conn, $sql);
+			$num_rows = mysqli_num_rows($result);
+			//$total_debt = 0;
+			
+			if(!logged_in()){
+				$error = "请先登陆账号!";
+				echo "<div id='error_new'>"; 
+					echo $error;
+				echo "</div>";
+			}
+			else if ($num_rows > 0){
+				//output data of each row
+				echo "<div id='table_arrange'>";
+				echo "<table><tr><th>姓名</th><th>性别</th><th>所在城市</th><th>欠款金额</th><th>具体查询</th></tr>";
+				//output data of each row
+				$totaldebt_perpage=0;
+				while($row = mysqli_fetch_array($result)){
+					echo "<tr><td>".$row["name"]."</td><td>".$row["gender"]."</td><td>".$row["city"]."</td><td>".$row["amount"]."</td><td><a href='search_new_result.php?search=$row[name]'>点击查看</a></td></tr>";	
+					$totaldebt_perpage+=$row["amount"];
+				}
+			//	$total_debt+=$totaldebt_perpage;
+				echo "</table>";
+				echo "</div>";
+				echo "<div id='debt_form'>";
+					echo "<p>客户欠款总金额: ".$totaldebt_perpage."</p>";
+				echo "</div>";
+				
+			}
+			else {
+				echo "0个查询结果";
+			}
 		
-        <br/>
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
-        
-		<br/><br/>
-        <input type = "submit" name = "submit" value = "点击查询该客户"/>
-		</form>
+		/*	$result1 = mysqli_query($conn, "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='Zhipeng' and cr.LastName='Gu'");
+			$total_record = mysqli_num_rows($result1);
+			$pages = $total_record/$perpage;
+			$pages = ceil($pages);
+			echo "<br/>";
+			//echo "<br/>";
+			for($b=1; $b<=$pages; $b++)
+			{
+				?><a href="search_result.php?page=<?php echo $b; ?>" style="text-decoration:none"><?php echo "<div id='totalpage'>"; echo "<div id='pages'>"; echo $b." "; echo "</div>"; echo "</div>"; ?></a><?php
+			} */
+				
+			mysqli_close($conn);
+		?>
+		
+		
     </div>
- </div>
- 
+	
+</div>
+
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -162,5 +231,7 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+
+</body>
+</html>

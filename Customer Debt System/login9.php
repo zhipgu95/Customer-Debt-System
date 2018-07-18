@@ -1,17 +1,27 @@
 <?php
+
 	include("connectdatabase.php");
 	include("function.php");
+
+	$error = ""; 
 	
-	
-	if(logged_in())
-	{
-		echo "You are logged in!";
+	if(isset($_POST['submit'])){
+		$username = mysqli_real_escape_string($conn, $_POST['username']);
+		$password = mysqli_real_escape_string($conn, $_POST['password']);
+		if (username_exists($username, $password, $conn)){
+			if ((($username=='admin') and ($password=='password')) or (($username=='jinpengtienda9') and ($password=='jinpeng9'))){
+				header("location: sales_9.php");
+			}
+			else {
+				$error = "当前账号没有权限查看!";
+			}
+		}
+		else {
+			$error = "请输入正确的账号和密码!";
+		}
+		
 	}
-	else
-	{
-		echo "You are not logged in!";
-	}
-	
+
 ?>
 
 
@@ -19,18 +29,16 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>查询客户</title>
+<title>查看9号店登陆认证页</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/search_result.css" rel="stylesheet" />
-
+<link href="css/search_result.css" rel="stylesheet"/>
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
@@ -91,8 +99,8 @@
 				</div>
 				</div>
 				</li>
-				<li><a href="Insert_Customer.php" title="insert">添加新客户</a></li>
-				<li><a href="Delete_Customer.php" title="delete">删除客户</a></li>
+				<li><a href="Insert_Customer.php" title="添加">添加新客户</a></li>
+				<li><a href="Delete_Customer.php" title="删除">删除客户</a></li>
 				<li>
 				<?php
 				if (isset($_SESSION['username'])){
@@ -106,7 +114,7 @@
 				}
 				?>
 				</li>
-			
+		
 				<div class="clear"></div>
 			</ul>
 		</div>
@@ -114,23 +122,25 @@
 	</div>
 </div>
 
+<div id="error"><?php echo $error; ?></div>
+
 <div class="table">
 
 	<div class = "table2">
-    	<form method = "Get" action = "search_result.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
-        <input type = "text" name = "firstname"/><br/>
-		
-        <br/>
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
+    	<form method = "Post" action = "login9.php"><br/>
+        <label class = "up" style='font-size: 15px;'>用户名</label><br/>
+        <input type = "text" name = "username"/><br/>
+		<br/>
         
-		<br/><br/>
-        <input type = "submit" name = "submit" value = "点击查询该客户"/>
+        <label class = "up" style='font-size: 15px;'>密码</label><br/>
+        <input type = "password" name = "password"/><br/>
+        <br/>
+        
+		<input type = "submit" name = "submit" value = "点击确认"/>
 		</form>
     </div>
  </div>
- 
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -162,5 +172,7 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+
+</body>
+</html>

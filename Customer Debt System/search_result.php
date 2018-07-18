@@ -3,17 +3,26 @@
 	include("connectdatabase.php");
 	include("function.php");
 	
+	if(logged_in())
+	{
+		echo "You are logged in!";
+	}
+	else
+	{
+		echo "You are not logged in!";
+	}
+	
 	$error = "";
 	
-	if(isset($_POST['submit']))
+	if(isset($_GET['submit']))
 	{
-		$firstName = $_POST['firstname'];
-		$lastName = $_POST['lastname'];
+		$firstName = $_GET['firstname'];
+		$lastName = $_GET['lastname'];
 		
 		$insertquery1 = "INSERT INTO search_record
 						(FirstName, LastName)
 						VALUES('$firstName','$lastName')";
-				
+			
 		if (!customer_exists($firstName, $lastName, $conn)){
 			$error = "该客户不存在，请去首页添加!";
 		}
@@ -49,12 +58,75 @@
 
 <div class="i_header header">
 	<div class="wrap">
-		<div class="logo"><a href="index.html" title="Jinpeng"><img src="images/JP_Logo.png" width="110" height="70"/></a></div>
+		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_Logo.png" width="110" height="70"/></a></div>
 		<div class="nav">
 			<ul>
-				<li><a href="Search_Customer.php" title="search">查询客户</a></li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">员工借款
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="insert_employee.php">添加新员工</a>
+					<a href="employee_search.php">员工搜索</a>
+					<a href="employee_list.php">员工列表</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">各店销售
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="login2.php">2号店</a>
+					<a href="login5.php">5号店</a>
+					<a href="login6.php">6号店</a>
+					<a href="login8.php">8号店</a>
+					<a href="login9.php">9号店</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">各店调货
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="search_2.php">2号店</a>
+					<a href="search_5.php">5号店</a>
+					<a href="search_6.php">6号店</a>
+					<a href="search_8.php">8号店</a>
+					<a href="search_9.php">9号店</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">查询客户
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="Search_Customer.php">客户搜索</a>
+					<a href="Search_Customer_Total.php">客户列表</a>
+				</div>
+				</div>
+				</li>
 				<li><a href="Insert_Customer.php" title="insert">添加新客户</a></li>
 				<li><a href="Delete_Customer.php" title="delete">删除客户</a></li>
+				<li>
+				<?php
+				if (isset($_SESSION['username'])){
+					echo "<form action='logout.php'>
+                        <button>退出</button>
+                    </form>";
+				} else {
+					echo "<form action='login.php' method='POST'>
+	                    <button type='submit'>登陆</button>
+                    </form>";
+				}
+				?>
+				</li>
 				
 				<div class="clear"></div>
 			</ul>
@@ -72,57 +144,61 @@
     	<?php
 			include("connectdatabase.php");
 			
-			if (isset($_GET['page'])) {
-				$page = intval($_GET['page']);
-			} 
-			else {
-				$page = 1;
-			}
-			$per_page = 3;
-			$calc = $per_page * $page;
-			$start = $calc - $per_page;
-
+		//	$perpage = 3;
+		//	if(isset($_GET["page"])){
+		//		$page = intval($_GET["page"]);
+		//	}
+		//	else {
+		//		$page = 1;
+		//	}
 			
-			$firstName = mysqli_real_escape_string($conn, $_POST['firstname']);
-			$lastName = mysqli_real_escape_string($conn, $_POST['lastname']);
-			$sql = "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='$firstName' and cr.LastName='$lastName' LIMIT $start, $per_page";
+		//	$total = $perpage * $page;
+		//	$start = $total - $perpage;
+			$firstName = mysqli_real_escape_string($conn, $_GET['firstname']);
+			$lastName = mysqli_real_escape_string($conn, $_GET['lastname']);
+			$sql = "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message, cr.Document as document from customer_record as cr where cr.FirstName='$firstName' and cr.LastName='$lastName'";
 			$result = mysqli_query($conn, $sql);
 			$num_rows = mysqli_num_rows($result);
+			//$total_debt = 0;
 			
-			if ($num_rows > 0){
+			if(!logged_in()){
+				$error = "请先登陆账号!";
+				echo "<div id='error_new'>"; 
+					echo $error;
+				echo "</div>";
+			}
+			else if ($num_rows > 0){
 				//output data of each row
 				echo "<div id='table_arrange'>";
-				echo "<table><tr><th>姓名</th><th>日期</th><th>金额</th><th>付款方式</th><th>详细备注</th></tr>";
+				echo "<table><tr><th>姓名</th><th>日期</th><th>金额</th><th>付款方式</th><th>详细备注</th><th>文件链接</th></tr>";
 				//output data of each row
-				$total_debt=0;
+				$totaldebt_perpage=0;
 				while($row = mysqli_fetch_array($result)){
-					echo "<tr><td>".$row["name"]."</td><td>".$row["date"]."</td><td>".$row["amount"]."</td><td>".$row["type"]."</td><td>".$row["message"]."</td></tr>";	
-					$total_debt+=$row["amount"];
+					echo "<tr><td>".$row["name"]."</td><td>".$row["date"]."</td><td>".$row["amount"]."</td><td>".$row["type"]."</td><td>".$row["message"]."</td><td><a href='documents/".$row["document"]."'>点击链接</a></td></tr>";	
+					$totaldebt_perpage+=$row["amount"];
 				}
+			//	$total_debt+=$totaldebt_perpage;
 				echo "</table>";
 				echo "</div>";
 				echo "<div id='debt_form'>";
-					echo "<p>欠款总金额: ".$total_debt."</p>";
+					echo "<p>本页欠款金额: ".$totaldebt_perpage."</p>";
 				echo "</div>";
+				
 			}
 			else {
 				echo "0个查询结果";
 			}
-			$total_sql = "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='$firstName' and cr.LastName='$lastName'";
-			$result_new = mysqli_query($conn, $total_sql);
-			$total = mysqli_num_rows($result_new);
-			$pages_number = $total/$per_page;
-			$total_pages = ceil($pages_number);
+		
+		/*	$result1 = mysqli_query($conn, "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='Zhipeng' and cr.LastName='Gu'");
+			$total_record = mysqli_num_rows($result1);
+			$pages = $total_record/$perpage;
+			$pages = ceil($pages);
 			echo "<br/>";
-			echo "<br/>";
-			echo "<br/>";
-			echo "<br/>";
-			
-			for($b=1; $b<=$total_pages; $b++)
+			//echo "<br/>";
+			for($b=1; $b<=$pages; $b++)
 			{
 				?><a href="search_result.php?page=<?php echo $b; ?>" style="text-decoration:none"><?php echo "<div id='totalpage'>"; echo "<div id='pages'>"; echo $b." "; echo "</div>"; echo "</div>"; ?></a><?php
-			}
-			
+			} */
 				
 			mysqli_close($conn);
 		?>
@@ -146,15 +222,15 @@
 
 <div class="h30"></div>
 <div class="main">
-	<a href="index.html" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/下载.jpg" width="260" height="200"/></p>
 		<h2 class="txt">诚信经营</h2>
 	</a>
-	<a href="index.html" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/friends.jpg" width="260" height="200"/></p>
 		<h2 class="txt">品质保障</h2>
 	</a>
-	<a href="index.html" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/qr.jpg" width="260" height="200"/></p>
 		<h2 class="txt">服务真挚</h2>
 	</a>

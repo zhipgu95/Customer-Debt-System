@@ -1,7 +1,7 @@
 <?php
+
 	include("connectdatabase.php");
 	include("function.php");
-	
 	
 	if(logged_in())
 	{
@@ -12,6 +12,9 @@
 		echo "You are not logged in!";
 	}
 	
+	$error = "";
+	
+	
 ?>
 
 
@@ -19,18 +22,16 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>查询客户</title>
+<title>查询结果</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/search_result.css" rel="stylesheet" />
-
+<link href="css/search_result.css" rel="stylesheet"/>
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
@@ -106,7 +107,7 @@
 				}
 				?>
 				</li>
-			
+				
 				<div class="clear"></div>
 			</ul>
 		</div>
@@ -114,23 +115,95 @@
 	</div>
 </div>
 
-<div class="table">
+<div id="error"><?php echo $error; ?></div>
 
-	<div class = "table2">
-    	<form method = "Get" action = "search_result.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
-        <input type = "text" name = "firstname"/><br/>
+<div class = "include">
+	<div class = "info"><p>查询结果</p></div>
+	
+	<div class = "table_info">
+    	<?php
+			include("connectdatabase.php");
+			
+		//	$perpage = 3;
+		//	if(isset($_GET["page"])){
+		//		$page = intval($_GET["page"]);
+		//	}
+		//	else {
+		//		$page = 1;
+		//	}
+			
+		//	$total = $perpage * $page;
+		//	$start = $total - $perpage;
+			if(isset($_GET['search']))
+			{
+				$name = $_GET['search'];
+				$sql = "SELECT distinct concat(cr.LastName, ' ', cr.FirstName) AS name, cr.Date AS date, cr.Amount AS amount, cr.Type AS type, cr.Message AS message, cr.Document AS document 
+						FROM customer_record AS cr 
+						WHERE concat(cr.LastName, ' ', cr.FirstName)='$name'";
+				$result = mysqli_query($conn, $sql);
+				$num_rows = mysqli_num_rows($result);	
+			}
+		//  $total_debt = 0;
+			
+			if(!logged_in()){
+				$error = "请先登陆账号!";
+				echo "<div id='error_new'>"; 
+					echo $error;
+				echo "</div>";
+			}
+			else if ($num_rows > 0){
+				//output data of each row
+				echo "<div id='table_arrange'>";
+				echo "<table><tr><th>姓名</th><th>日期</th><th>金额</th><th>付款方式</th><th>详细备注</th><th>文件链接</th></tr>";
+				//output data of each row
+				$totaldebt_perpage=0;
+				while($row = mysqli_fetch_array($result)){
+					echo "<tr><td>".$row["name"]."</td><td>".$row["date"]."</td><td>".$row["amount"]."</td><td>".$row["type"]."</td><td>".$row["message"]."</td><td><a href='documents/".$row["document"]."'>点击链接</a></td></tr>";	
+					$totaldebt_perpage+=$row["amount"];
+				}
+			//	$total_debt+=$totaldebt_perpage;
+				echo "</table>";
+				echo "</div>";
+				echo "<div id='debt_form'>";
+					echo "<p>总计欠款金额: ".$totaldebt_perpage."</p>";
+				echo "</div>";
+				
+			}
+			else {
+				echo "0个查询结果";
+			}
 		
-        <br/>
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
-        
-		<br/><br/>
-        <input type = "submit" name = "submit" value = "点击查询该客户"/>
+		/*	$result1 = mysqli_query($conn, "select distinct concat(cr.LastName, ' ', cr.FirstName) as name, cr.Date as date, cr.Amount as amount, cr.Type as type, cr.Message as message from customer_record as cr where cr.FirstName='Zhipeng' and cr.LastName='Gu'");
+			$total_record = mysqli_num_rows($result1);
+			$pages = $total_record/$perpage;
+			$pages = ceil($pages);
+			echo "<br/>";
+			//echo "<br/>";
+			for($b=1; $b<=$pages; $b++)
+			{
+				?><a href="search_result.php?page=<?php echo $b; ?>" style="text-decoration:none"><?php echo "<div id='totalpage'>"; echo "<div id='pages'>"; echo $b." "; echo "</div>"; echo "</div>"; ?></a><?php
+			} */
+				
+			mysqli_close($conn);
+		?>
+		
+		<div class = "table3">
+    	<form method = "Post" action = "insert_debt.php" enctype="multipart/form-data">
+        <input type = "submit" name = "submit_first" value = "添加新欠款"/>
 		</form>
+		</div>
+		
+		<div class = "table4">
+    	<form method = "Post" action = "insert_repayment.php" enctype="multipart/form-data">
+        <input type = "submit" name = "submit_second" value = "添加新还款"/>
+		</form>
+		</div>
+		
     </div>
- </div>
- 
+	
+</div>
+
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -162,5 +235,7 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+
+</body>
+</html>
