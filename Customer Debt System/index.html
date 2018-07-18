@@ -1,3 +1,17 @@
+<?php
+	
+	include("connectdatabase.php");
+	include("function.php");
+	
+	if(logged_in()){
+		echo "YOu are logged in!";
+	}
+	else {
+		echo "You are not logged in!";
+	}
+
+?>
+
 <!DOCTYPE html>
 <html class="no-js">
 <head>
@@ -24,7 +38,19 @@
 				<li><a href="Search_Customer.php" title="查询">查询客户</a></li>
 				<li><a href="Insert_Customer.php" title="添加">添加新客户</a></li>
 				<li><a href="Delete_Customer.php" title="删除">删除客户</a></li>
-				
+				<li>
+				<?php
+				if (isset($_SESSION['username'])){
+					echo "<form action='logout.php'>
+                        <button>LOG OUT</button>
+                    </form>";
+				} else {
+					echo "<form action='login.php' method='POST'>
+	                    <button type='submit'>LOGIN</button>
+                    </form>";
+				}
+				?>
+				</li>
 				<div class="clear"></div>
 			</ul>
 		</div>

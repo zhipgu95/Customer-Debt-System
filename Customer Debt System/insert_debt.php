@@ -3,6 +3,15 @@
 	include("connectdatabase.php");
 	include("function.php");
 	
+	if(logged_in())
+	{
+		echo "You are logged in!";
+	}
+	else
+	{
+		echo "You are not logged in!";
+	}
+	
 	$error = "";
 	
 	if(isset($_POST['submit']))
@@ -17,8 +26,14 @@
 		$Amount = $_POST['amount'];
 		$Type = $_POST['type'];
 		$msg = $_POST['msg'];
+		$file = $_FILES['file']['name'];
+		$tmp_file = $_FILES['file']['tmp_name'];
+		$fileSize = $_FILES['file']['size'];
 		
-		if(strlen($firstName)==0){
+		if(!logged_in()){
+			$error = "请先登陆账号!";
+		}
+		else if(strlen($firstName)==0){
 			$error = "名字不能为空!";
 		}
 		else if(strlen($lastName)==0){
@@ -28,10 +43,15 @@
 			$error = "添加的欠款金额需要大于0!";
 		}
 		else {
-			$insertQuery = "INSERT INTO customer_record(FirstName, LastName, Date, Amount, Type, Message)
-							VALUES('$firstName','$lastName','$Date','$Amount','$Type', '$msg')";
+			$insertQuery = "INSERT INTO customer_record(FirstName, LastName, Date, Amount, Type, Message, Document)
+							VALUES('$firstName','$lastName','$Date','$Amount','$Type', '$msg', '$file')";
 			if(mysqli_query($conn,$insertQuery)){
-				$error = "您已成功添加该欠款!";
+				if(move_uploaded_file($tmp_file, "documents/$file")){
+					$error = "您已成功添加该欠款!";
+				}
+				else {
+					$error = "文件未上传或上传失败!";
+				}
 			}
 		}		
 	}
@@ -60,13 +80,76 @@
 
 <div class="i_header header">
 	<div class="wrap">
-		<div class="logo"><a href="index.html" title="Jinpeng"><img src="images/JP_logo.png" width="110" height="70"/></a></div>
+		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_logo.png" width="110" height="70"/></a></div>
 		<div class="nav">
 			<ul>
-				<li><a href="Search_Customer.php" title="search">查询客户</a></li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">员工借款
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="insert_employee.php">添加新员工</a>
+					<a href="employee_search.php">员工搜索</a>
+					<a href="employee_list.php">员工列表</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">各店销售
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="login2.php">2号店</a>
+					<a href="login5.php">5号店</a>
+					<a href="login6.php">6号店</a>
+					<a href="login8.php">8号店</a>
+					<a href="login9.php">9号店</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">各店调货
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="search_2.php">2号店</a>
+					<a href="search_5.php">5号店</a>
+					<a href="search_6.php">6号店</a>
+					<a href="search_8.php">8号店</a>
+					<a href="search_9.php">9号店</a>
+				</div>
+				</div>
+				</li>
+				<li>
+				<div class="dropdown">
+				<button class="dropbtn">查询客户
+					<i class="fa fa-caret-down"></i>
+				</button>
+				<div class="dropdown-content">
+					<a href="Search_Customer.php">客户搜索</a>
+					<a href="Search_Customer_Total.php">客户列表</a>
+				</div>
+				</div>
+				</li>
 				<li><a href="Insert_Customer.php" title="insert">添加新客户</a></li>
 				<li><a href="Delete_Customer.php" title="delete">删除客户</a></li>
-			
+				<li>
+				<?php
+				if (isset($_SESSION['username'])){
+					echo "<form action='logout.php'>
+                        <button>退出</button>
+                    </form>";
+				} else {
+					echo "<form action='login.php' method='POST'>
+	                    <button type='submit'>登陆</button>
+                    </form>";
+				}
+				?>
+				</li>
+					
 				<div class="clear"></div>
 			</ul>
 		</div>
@@ -79,7 +162,7 @@
 <div class="table">
     
     <div class = "provider">
-    	<form method = "Post" action = "insert_debt.php"><br/>
+    	<form method = "Post" action = "insert_debt.php" enctype="multipart/form-data"><br/>
 		
 		<label class = "up" >名字</label>
         <input type = "text" name = "firstname"/><br/>
@@ -152,8 +235,8 @@
         
         <label class = "up">金额</label>
         <input type = "text" name = "amount"/><br/>
-        <br/>
-        
+		<br/>
+		
         <label class = "up">欠款方式</label>
         <select name = "type">
 		  <option value="cash">现金</option>
@@ -161,8 +244,12 @@
 		</select><br/>
         <br/>
 		
+		<label class = "up">文件上传</label>
+		<input type = "file" name="file" id="file"/><br/>
+		<br/>
+		
 		<label class = "up">详细备注</label><br/>
-		<textarea name = "msg" rows="5" cols="50" placeholder="在这里输入..."></textarea>
+		<textarea name = "msg" rows="3" cols="50" placeholder="在这里输入..."></textarea>
 		<br/>
 		<br/>
 		
@@ -173,15 +260,15 @@
 
 <div class="h30"></div>
 <div class="main">
-	<a href="board.php" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/下载.jpg" width="260" height="200"/></p>
 		<h2 class="txt">诚信经营</h2>
 	</a>
-	<a href="search guardian.php" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/friends.jpg" width="260" height="200"/></p>
 		<h2 class="txt">品质保障</h2>
 	</a>
-	<a href="contact_us.php" class="btn btn_css3">
+	<a href="index.php" class="btn btn_css3">
 		<p class="pic"><img src="images/qr.jpg" width="260" height="200"/></p>
 		<h2 class="txt">服务真挚</h2>
 	</a>

@@ -1,4 +1,5 @@
 <?php
+
 	include("connectdatabase.php");
 	include("function.php");
 	
@@ -17,45 +18,33 @@
 	{
 		$firstName = $_POST['firstname'];
 		$lastName = $_POST['lastname'];
-		$gender = $_POST['gender'];
-		$city = $_POST['city'];
-		$wechat = $_POST['wechat'];
+		$Year = $_POST['year'];
+		$Month = $_POST['month'];
+		$Day = $_POST['day'];
+		$Dob = "{$Year}-{$Month}-{$Day}";
+		$Date = date("Y-m-d", strtotime($Dob));
+		$Amount = $_POST['amount'];
+		$Detail = $_POST['detail'];
 		
-		$firstName = mysqli_real_escape_string($conn, $_POST['firstname']);
-		$lastName = mysqli_real_escape_string($conn, $_POST['lastname']);
-		$gender = mysqli_real_escape_string($conn, $_POST['gender']);
-		$city = mysqli_real_escape_string($conn, $_POST['city']);
-		$wechat = mysqli_real_escape_string($conn, $_POST['wechat']);
-		
-		$sql = "select c.* from customer as c where c.FirstName='$firstName' and c.LastName='$lastName' and c.Gender='$gender' and c.City='$city' and c.Wechat='$wechat'";
-		$result = mysqli_query($conn, $sql);
-		if(!logged_in())
-		{
+		if(!logged_in()){
 			$error = "请先登陆账号!";
 		}
-		else if(strlen($firstName)==0)
-		{
+		else if(strlen($firstName)==0){
 			$error = "名字不能为空!";
 		}
-		else if(strlen($lastName)==0)
-		{
+		else if(strlen($lastName)==0){
 			$error = "姓氏不能为空!";
 		}
-		//move_uploaded_file($tmp_image, "images/$image")
-		//move_uploaded_file($_FILES['image']['tmp_name'] , "images/$image" . $FILES['image']['name']))
-		else if(mysqli_num_rows($result)!=0)
-		{
-			$error = "此客户已存在，无需再添加!";
-		}			
-		else
-		{	
-			$insertQuery = "INSERT INTO customer(FirstName, LastName, Gender, City, Wechat)
-							VALUES('$firstName','$lastName','$gender', '$city', '$wechat')";
-			if(mysqli_query($conn, $insertQuery))
-			{
-				$error = "您已成功添加!";
-			}
+		else if($Amount<0){
+			$error = "添加的欠款金额需要大于0!";
 		}
+		else {
+			$insertQuery = "INSERT INTO employee_record(FirstName, LastName, Date, Amount, Detail)
+							VALUES('$firstName','$lastName','$Date','$Amount','$Detail')";
+			if(mysqli_query($conn,$insertQuery)){
+				$error = "您已成功添加该借款!";
+			}
+		}		
 	}
 	
 ?>
@@ -66,25 +55,23 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>添加新客户</title>
+<title>添加新的员工借款</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/insert.css" rel="stylesheet" />
-
+<link href="css/insert_debt.css" rel="stylesheet" />
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
 
 <div class="i_header header">
 	<div class="wrap">
-		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_Logo.png" width="110" height="70"/></a></div>
+		<div class="logo"><a href="index.php" title="Jinpeng"><img src="images/JP_logo.png" width="110" height="70"/></a></div>
 		<div class="nav">
 			<ul>
 				<li>
@@ -153,43 +140,104 @@
 				}
 				?>
 				</li>
-			
+					
 				<div class="clear"></div>
 			</ul>
 		</div>
 		<div class="clear"></div>
 	</div>
 </div>
+
 <div id="error"><?php echo $error; ?></div>
 
 <div class="table">
-
-	<div class = "table2">
-    	<form method = "Post" action = "Insert_Customer.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
+    
+    <div class = "provider">
+    	<form method = "Post" action = "insert_employee_debt.php" enctype="multipart/form-data"><br/>
+		
+		<label class = "up" >名字</label>
         <input type = "text" name = "firstname"/><br/>
-        
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
-        
-       <label class = "up">性别</label><br/>
-        <select name = "gender">
-		  <option value="male">男性</option>
-		  <option value="female">女性</option>
-		</select><br/>
-        
-        <label class = "up">城市</label><br/>
-        <input type = "text" name = "city"/><br/>
-        
-        <label class = "up">微信号</label><br/>
-        <input type = "text" name = "wechat"/><br/>
-        
 		<br/>
-        <input type = "submit" name = "submit" value = "点击添加新客户"/>
+        
+        <label class = "up" >姓氏</label>
+        <input type = "text" name = "lastname"/><br/>
+        <br/>
+        
+        <label class="up">年</label>
+		<select name="year">
+			<option value="2017">2017</option>
+			<option value="2018">2018</option>
+			<option value="2019">2019</option>
+			<option value="2020">2020</option>
+			<option value="2021">2021</option>
+		</select>
+		
+        <label class = "up" >月</label>
+        <select name = "month">
+		  <option value="1">01</option>
+		  <option value="2">02</option>
+		  <option value="3">03</option>
+		  <option value="4">04</option>
+		  <option value="5">05</option>
+		  <option value="6">06</option>
+		  <option value="7">07</option>
+		  <option value="8">08</option>
+		  <option value="9">09</option>
+		  <option value="10">10</option>
+		  <option value="11">11</option>
+		  <option value="12">12</option>
+		</select>
+        
+        <label class = "up">日</label>
+        <select name = "day">
+		  <option value="1">01</option>
+		  <option value="2">02</option>
+		  <option value="3">03</option>
+		  <option value="4">04</option>
+		  <option value="5">05</option>
+		  <option value="6">06</option>
+		  <option value="7">07</option>
+		  <option value="8">08</option>
+		  <option value="9">09</option>
+		  <option value="10">10</option>
+		  <option value="11">11</option>
+		  <option value="12">12</option>
+		  <option value="13">13</option>
+		  <option value="14">14</option>
+		  <option value="15">15</option>
+		  <option value="16">16</option>
+		  <option value="17">17</option>
+		  <option value="18">18</option>
+		  <option value="19">19</option>
+		  <option value="20">20</option>
+		  <option value="21">21</option>
+		  <option value="22">22</option>
+		  <option value="23">23</option>
+		  <option value="24">24</option>
+		  <option value="25">25</option>
+		  <option value="26">26</option>
+		  <option value="27">27</option>
+		  <option value="28">28</option>
+		  <option value="29">29</option>
+		  <option value="30">30</option>
+		  <option value="31">31</option>
+		</select> <br/>
+        <br/>
+        
+        <label class = "up">金额</label>
+        <input type = "text" name = "amount"/><br/>
+		<br/>
+		
+		<label class = "up">详细备注</label><br/>
+		<textarea name = "detail" rows="3" cols="50" placeholder="在这里输入..."></textarea>
+		<br/>
+		<br/>
+		
+        <input type = "submit" name = "submit" value = "添加该借款"/>
 		</form>
     </div>
  </div>
- 
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -221,5 +269,6 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+</body>
+</html>

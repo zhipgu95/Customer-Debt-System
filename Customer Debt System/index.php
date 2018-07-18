@@ -1,83 +1,31 @@
 <?php
+	
 	include("connectdatabase.php");
 	include("function.php");
 	
-	if(logged_in())
-	{
+	if(logged_in()){
 		echo "You are logged in!";
 	}
-	else
-	{
+	else {
 		echo "You are not logged in!";
 	}
-	
-	$error = "";
-	
-	if(isset($_POST['submit']))
-	{
-		$firstName = $_POST['firstname'];
-		$lastName = $_POST['lastname'];
-		$gender = $_POST['gender'];
-		$city = $_POST['city'];
-		$wechat = $_POST['wechat'];
-		
-		$firstName = mysqli_real_escape_string($conn, $_POST['firstname']);
-		$lastName = mysqli_real_escape_string($conn, $_POST['lastname']);
-		$gender = mysqli_real_escape_string($conn, $_POST['gender']);
-		$city = mysqli_real_escape_string($conn, $_POST['city']);
-		$wechat = mysqli_real_escape_string($conn, $_POST['wechat']);
-		
-		$sql = "select c.* from customer as c where c.FirstName='$firstName' and c.LastName='$lastName' and c.Gender='$gender' and c.City='$city' and c.Wechat='$wechat'";
-		$result = mysqli_query($conn, $sql);
-		if(!logged_in())
-		{
-			$error = "请先登陆账号!";
-		}
-		else if(strlen($firstName)==0)
-		{
-			$error = "名字不能为空!";
-		}
-		else if(strlen($lastName)==0)
-		{
-			$error = "姓氏不能为空!";
-		}
-		//move_uploaded_file($tmp_image, "images/$image")
-		//move_uploaded_file($_FILES['image']['tmp_name'] , "images/$image" . $FILES['image']['name']))
-		else if(mysqli_num_rows($result)!=0)
-		{
-			$error = "此客户已存在，无需再添加!";
-		}			
-		else
-		{	
-			$insertQuery = "INSERT INTO customer(FirstName, LastName, Gender, City, Wechat)
-							VALUES('$firstName','$lastName','$gender', '$city', '$wechat')";
-			if(mysqli_query($conn, $insertQuery))
-			{
-				$error = "您已成功添加!";
-			}
-		}
-	}
-	
+
 ?>
-
-
 
 <!DOCTYPE html>
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>添加新客户</title>
+<title>客户欠款系统首页</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
 <meta name="description" content="" />
 <link href="css/reset.css" rel="stylesheet" />
 <link href="css/main.css" rel="stylesheet" />
-<link href="css/insert.css" rel="stylesheet" />
-
+<link href="css/index.css" rel="stylesheet"/>
 </head>
-<body style= "background:">
-
+<body>
 
 <h1>
 </h1>
@@ -138,8 +86,8 @@
 				</div>
 				</div>
 				</li>
-				<li><a href="Insert_Customer.php" title="insert">添加新客户</a></li>
-				<li><a href="Delete_Customer.php" title="delete">删除客户</a></li>
+				<li><a href="Insert_Customer.php" title="添加">添加新客户</a></li>
+				<li><a href="Delete_Customer.php" title="删除">删除客户</a></li>
 				<li>
 				<?php
 				if (isset($_SESSION['username'])){
@@ -153,43 +101,23 @@
 				}
 				?>
 				</li>
-			
 				<div class="clear"></div>
 			</ul>
 		</div>
 		<div class="clear"></div>
 	</div>
 </div>
-<div id="error"><?php echo $error; ?></div>
+
 
 <div class="table">
 
 	<div class = "table2">
-    	<form method = "Post" action = "Insert_Customer.php" enctype="multipart/form-data"><br/>
-        <label class = "up" >名字</label><br/>
-        <input type = "text" name = "firstname"/><br/>
-        
-        <label class = "up">姓氏</label><br/>
-        <input type = "text" name = "lastname"/><br/>
-        
-       <label class = "up">性别</label><br/>
-        <select name = "gender">
-		  <option value="male">男性</option>
-		  <option value="female">女性</option>
-		</select><br/>
-        
-        <label class = "up">城市</label><br/>
-        <input type = "text" name = "city"/><br/>
-        
-        <label class = "up">微信号</label><br/>
-        <input type = "text" name = "wechat"/><br/>
-        
+    	<p class = "word">Importadora Jinpeng</p><br/>
 		<br/>
-        <input type = "submit" name = "submit" value = "点击添加新客户"/>
-		</form>
+		<p class = "word">Limitada</p>
     </div>
  </div>
- 
+
 <div class="h30"></div>
 <div class="main">
 	<a href="index.php" class="btn btn_css3">
@@ -221,5 +149,7 @@
 <embed src="music.mp3" autostart="true" loop="true"
 width="2" height="0">
 </embed>
- </body>
- </html>
+
+
+</body>
+</html>

@@ -18,16 +18,12 @@
 		$firstName = $_POST['firstname'];
 		$lastName = $_POST['lastname'];
 		$gender = $_POST['gender'];
-		$city = $_POST['city'];
-		$wechat = $_POST['wechat'];
 		
 		$firstName = mysqli_real_escape_string($conn, $_POST['firstname']);
 		$lastName = mysqli_real_escape_string($conn, $_POST['lastname']);
 		$gender = mysqli_real_escape_string($conn, $_POST['gender']);
-		$city = mysqli_real_escape_string($conn, $_POST['city']);
-		$wechat = mysqli_real_escape_string($conn, $_POST['wechat']);
 		
-		$sql = "select c.* from customer as c where c.FirstName='$firstName' and c.LastName='$lastName' and c.Gender='$gender' and c.City='$city' and c.Wechat='$wechat'";
+		$sql = "select e.* from employee as e where e.FirstName='$firstName' and e.LastName='$lastName' and e.Gender='$gender'";
 		$result = mysqli_query($conn, $sql);
 		if(!logged_in())
 		{
@@ -45,12 +41,12 @@
 		//move_uploaded_file($_FILES['image']['tmp_name'] , "images/$image" . $FILES['image']['name']))
 		else if(mysqli_num_rows($result)!=0)
 		{
-			$error = "此客户已存在，无需再添加!";
+			$error = "此员工已存在，无需再添加!";
 		}			
 		else
 		{	
-			$insertQuery = "INSERT INTO customer(FirstName, LastName, Gender, City, Wechat)
-							VALUES('$firstName','$lastName','$gender', '$city', '$wechat')";
+			$insertQuery = "INSERT INTO employee(FirstName, LastName, Gender)
+							VALUES('$firstName','$lastName','$gender')";
 			if(mysqli_query($conn, $insertQuery))
 			{
 				$error = "您已成功添加!";
@@ -66,7 +62,7 @@
 <html class="no-js">
 <head>
 <meta charset="UTF-8" />
-<title>添加新客户</title>
+<title>添加新员工</title>
 <meta http-equiv="X-UA-Compatible" content="IE=edge" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="keywords" content="" />
@@ -165,27 +161,23 @@
 <div class="table">
 
 	<div class = "table2">
-    	<form method = "Post" action = "Insert_Customer.php" enctype="multipart/form-data"><br/>
+    	<form method = "Post" action = "insert_employee.php" enctype="multipart/form-data"><br/>
         <label class = "up" >名字</label><br/>
         <input type = "text" name = "firstname"/><br/>
+		<br/>
         
         <label class = "up">姓氏</label><br/>
         <input type = "text" name = "lastname"/><br/>
+		<br/>
         
        <label class = "up">性别</label><br/>
         <select name = "gender">
 		  <option value="male">男性</option>
 		  <option value="female">女性</option>
 		</select><br/>
+        <br/>
         
-        <label class = "up">城市</label><br/>
-        <input type = "text" name = "city"/><br/>
-        
-        <label class = "up">微信号</label><br/>
-        <input type = "text" name = "wechat"/><br/>
-        
-		<br/>
-        <input type = "submit" name = "submit" value = "点击添加新客户"/>
+		<input type = "submit" name = "submit" value = "点击添加新员工"/>
 		</form>
     </div>
  </div>
